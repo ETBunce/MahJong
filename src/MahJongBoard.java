@@ -85,8 +85,11 @@ public class MahJongBoard extends JPanel implements MouseListener {
 	//Mouse Listener implementation
 	public void mousePressed(MouseEvent e) {
 		Tile t = (Tile)e.getSource();
-		remove(t);
-		repaint();
+		if (t.isOpen()) {
+			model.liftTile(t);
+			remove(t);
+			repaint();
+		}
 	}
 	
 	

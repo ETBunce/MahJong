@@ -3,12 +3,12 @@ import javax.swing.*;
 
 public class Tile extends JPanel{
 	
+	// STATIC DECLARATIONS
 	public	static	final	Dimension	SIZE;
 	private	static	final	Polygon		SIDE1;
 	private	static	final	Polygon		BOTTOM1;
 	private	static	final	Polygon		SIDE2;
 	private	static	final	Polygon		BOTTOM2;
-
 	private static	final	Rectangle	FACE;
 
 	private	static	final	GradientPaint	FACE_PAINT;
@@ -17,7 +17,7 @@ public class Tile extends JPanel{
 	private	static	final	GradientPaint	SIDE2_PAINT;
 	private	static	final	GradientPaint	BOTTOM2_PAINT;
 	
-	//CONFIG
+	// CONFIG AND CONSTANTS
 	public static final int TILE_SIZE = 86;
 	public static final int THICK_1 = 10;
 	public static final int THICK_2 = 6;
@@ -26,10 +26,13 @@ public class Tile extends JPanel{
 	public static final int THICK = THICK_1 + THICK_2;
 	public static final int FACE_LENGTH = TILE_SIZE - THICK;
 	
-	private boolean isSpecial = false;
+	// VARIABLES
+	private int specialIndex = -1;
 	private int row = -1;
 	private int col = -1;
-	private int lay = -1;
+	private int layer = -1;
+	private MahJongModel model;
+	private int zOrder = -1;
 	
 	static
 	{
@@ -76,12 +79,18 @@ public class Tile extends JPanel{
 		BOTTOM2_PAINT = new GradientPaint(THICK_2 + PADDING, FACE_LENGTH + THICK_1 + PADDING,stoneColor, TILE_SIZE - THICK + PADDING,TILE_SIZE + PADDING, stoneFade);
 	}
 
+	// CONSTRUCTOR
 	public Tile () {
+		this(null);
+	}
+	public Tile (MahJongModel model) {
 		setSize(SIZE);
 		setPreferredSize(SIZE);
 		setOpaque(false);
+		this.model = model;
 	}
 	
+	// METHODS
 	public boolean matches(Tile other) {
 		if (this == other) return true;
 		if (other == null) return false;
@@ -89,23 +98,37 @@ public class Tile extends JPanel{
 		return false;
 	}
 	
+	public boolean isOpen() {
+		if (model == null) return false;
+		if (isSpecial()) return model.isTileOpen(specialIndex);
+		return model.isTileOpen(row,col,layer);
+	}
+	
+	// GETTERS
+	public int getRow() { return row; }
+	public int getCol() { return col; }
+	public int getLayer() { return layer; }
+	public int getZorder() { return zOrder; }
+	public int getSpecialIndex() { return specialIndex; }
+	public boolean isSpecial() { return specialIndex >= 0; }
+	
+
+
+	
+	// SETTERS
+	public void setSpecial(int specialIndex) { this.specialIndex = specialIndex; }
+	public void setModel(MahJongModel model) { this.model = model; }
+	public void setZOrder() { zOrder = getParent().getComponentZOrder(this); }
+	
+	public void resetZOrder() { getParent().setComponentZOrder(this, zOrder); }
+	
 	public void setCoordinates(int row, int col, int layer) {
 		this.row = row;
 		this.col = col;
-		this.lay = layer;
+		this.layer = layer;
 	}
 	
-	public void setSpecial() {
-		isSpecial = true;
-	}
-	
-	public int getRow() { return row; }
-	public int getCol() { return col; }
-	public int getLay() { return lay; }
-	
-	public boolean isSpecial() {
-		return isSpecial;
-	}
+	// OVERRIDES
 	public void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
@@ -129,6 +152,7 @@ public class Tile extends JPanel{
 		g2.draw(BOTTOM2);
 	}
 	
+	// MAIN
 	public static void main(String[] args)
 	{
 		JFrame	frame = new JFrame();
