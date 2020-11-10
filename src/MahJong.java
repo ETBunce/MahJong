@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class MahJong extends JFrame {
 	
@@ -8,12 +10,14 @@ public class MahJong extends JFrame {
 	{
 		//Menu
 		JMenuBar bar = new JMenuBar();
-		JMenu file = new JMenu("File");
-		JMenuItem save = new JMenuItem("Save",'S');
-		file.setMnemonic('F');
-		file.add(save);
-		bar.add(file);
+//		JMenu file = new JMenu("File");
+//		JMenuItem save = new JMenuItem("Save",'S');
+//		file.setMnemonic('F');
+//		file.add(save);
+//		bar.add(file);
 		setJMenuBar(bar);
+		MenuFactory.setMenuBar(bar);
+		MenuFactory.newJMenu("File",KeyEvent.VK_F);
 		
 		//Board
 		board = new MahJongBoard(this);
