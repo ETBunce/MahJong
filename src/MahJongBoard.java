@@ -1,19 +1,23 @@
 import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
 public class MahJongBoard extends JPanel implements MouseListener {
 	
+	// CONFIG
 	public static final Dimension SIZE = new Dimension(1200,700);
-	
 	private static final int OFFSET_X = (SIZE.width - Tile.FACE_LENGTH * 15) / 2;
 	private static final int OFFSET_Y = (SIZE.height - Tile.FACE_LENGTH * 8) / 2 - Tile.THICK;
 	
+	// VARIABLES
+	private Tile selectedTile = null;
+//	private Border selectedBorder = BorderFactory.createLineBorder(Color.GREEN,2);
 	private ImageIcon backgroundImage;
-	
 	private MahJong game;
 	private MahJongModel model;
+	private Outline outline = new Outline();
 
 	public MahJongBoard(MahJong game)
 	{
@@ -30,6 +34,8 @@ public class MahJongBoard extends JPanel implements MouseListener {
 			System.err.println("Could not load image: images/dragon_bg.png");
 			backgroundImage = new ImageIcon();
 		}
+		add(outline);
+		setComponentZOrder(outline, 0);
 		
 		//Add the tiles
 		
@@ -85,10 +91,72 @@ public class MahJongBoard extends JPanel implements MouseListener {
 	//Mouse Listener implementation
 	public void mousePressed(MouseEvent e) {
 		Tile t = (Tile)e.getSource();
-		if (t.isOpen()) {
+		if (!t.isOpen() || t.equals(selectedTile)) {
+			deselect();
+//			revalidate();
+//			repaint();
+			return;
+		}
+		if (t.matches(selectedTile)) {
+			t.setZOrder();
 			model.liftTile(t);
 			remove(t);
+			selectedTile.setZOrder();
+			model.liftTile(selectedTile);
+			remove(selectedTile);
+			deselect();
+		} else {
+			select(t);
+		}
+		revalidate();
+		repaint();
+	}
+	
+	private void select(Tile t) {
+		selectedTile = t;
+		outline.show(t.getX(),t.getY());
+	}
+	
+	private void deselect() {
+		selectedTile = null;
+		outline.hide();
+	}
+	
+	private class Outline extends JPanel {
+		
+		private boolean visible = false;
+		
+		public Outline(int x, int y) {
+			setLocation(x,y);
+			setSize(Tile.SIZE);
+			setPreferredSize(Tile.SIZE);
+			setOpaque(false);
+		}
+		public Outline() { this(0,0); }
+		
+		public void setVisible(boolean v) {
+			visible = v;
+		}
+		public void show() {
+			visible = true;
 			repaint();
+		}
+		public void hide() {
+			visible = false;
+			repaint();
+		}
+		
+		public void show(int x, int y) {
+			visible = true;
+			setLocation(x,y);
+			repaint();
+		}
+		
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			if (!visible) return;
+			g.setColor(new Color(50,155,50));
+			g.drawRect(1,1,Tile.SIZE.width - 2,Tile.SIZE.height - 2);
 		}
 	}
 	
