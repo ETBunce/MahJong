@@ -79,6 +79,29 @@ public class MahJongModel {
 		}
 	}
 	
+	public void liftTile(Tile t) {
+		undoStack.push(t);
+		if (t.isSpecial()) specialSlots[t.getSpecialIndex()] = null;
+		else slots[t.getRow()][t.getCol()][t.getLayer()] = null;
+	}
+	
+	public void undo() {
+		if (undoStack.isEmpty()) return;
+		replaceTile(undoStack.pop());
+		replaceTile(undoStack.pop());		
+	}
+	
+	public Tile replaceTile(Tile t) {
+		board.add(t);
+		if (t.isSpecial()) {
+			specialSlots[t.getSpecialIndex()] = t;
+		} else {
+			slots[t.getRow()][t.getCol()][t.getLayer()] = t;
+		}
+		t.resetZOrder();
+		return t;
+	}
+	
 	// GETTERS
 
 	public Tile getSpecialTile(int i) {
@@ -133,11 +156,6 @@ public class MahJongModel {
 	}
 	
 	// SETTERS
-	public void liftTile(Tile t) {
-		undoStack.push(t);
-		if (t.isSpecial()) specialSlots[t.getSpecialIndex()] = null;
-		else slots[t.getRow()][t.getCol()][t.getLayer()] = null;
-	}
 }
 
 

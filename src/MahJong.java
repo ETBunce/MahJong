@@ -22,8 +22,7 @@ public class MahJong extends JFrame {
 		makeMenu();
 		
 		// Make Board
-		board = new MahJongBoard(this);
-		add(board);
+		newBoard();
 		
 		//Finish up
 		pack();
@@ -54,10 +53,21 @@ public class MahJong extends JFrame {
 		
 	}
 	
+	public void newBoard() {
+		board = new MahJongBoard(this);
+		add(board);
+	}
+	
+	public void resetBoard() {
+		remove(board);
+		newBoard();
+	}
+	
 	public void newGame() {
 		int choice = JOptionPane.showConfirmDialog(this,"Start a new game?","New Game",JOptionPane.OK_CANCEL_OPTION);
 		if (choice == JOptionPane.OK_OPTION) {
-			// TODO: Start a new game
+			resetBoard();
+			revalidate();
 		}
 	}
 	
@@ -67,7 +77,7 @@ public class MahJong extends JFrame {
 	}
 	
 	public void undo() {
-		//TODO: Undo
+		board.undo();
 	}
 
 	public static void main(String[] args) {

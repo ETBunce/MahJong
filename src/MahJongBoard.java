@@ -19,6 +19,7 @@ public class MahJongBoard extends JPanel implements MouseListener {
 	private MahJongModel model;
 	private Outline outline = new Outline();
 
+	// CONSTRUCTOR
 	public MahJongBoard(MahJong game)
 	{
 		this.game = game;
@@ -83,11 +84,21 @@ public class MahJongBoard extends JPanel implements MouseListener {
 		st.addMouseListener(this);
 	}
 	
+	// METHODS
+	
+	public void undo() {
+		model.undo();
+		revalidate();
+		repaint();
+	}
+	
+	// OVERRIDING
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		backgroundImage.paintIcon(this, g, (SIZE.width - backgroundImage.getIconWidth()) / 2, (SIZE.height - backgroundImage.getIconHeight()) / 2);
 	}
 
+	// INTERFACES
 	//Mouse Listener implementation
 	public void mousePressed(MouseEvent e) {
 		Tile t = (Tile)e.getSource();
@@ -159,7 +170,6 @@ public class MahJongBoard extends JPanel implements MouseListener {
 			g.drawRect(1,1,Tile.SIZE.width - 2,Tile.SIZE.height - 2);
 		}
 	}
-	
 	
 	public void mouseClicked(MouseEvent e) {}
 	public void mouseReleased(MouseEvent e) {}
