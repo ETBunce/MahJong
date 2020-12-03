@@ -23,6 +23,14 @@ public class MahJongModel {
 	public MahJongModel(MahJongBoard board)
 	{
 		this.board = board;
+		deck.shuffle();
+		dealBoard();
+	}
+
+	public MahJongModel(MahJongBoard board, long seed)
+	{
+		this.board = board;
+		deck.shuffle(seed);
 		dealBoard();
 	}
 	
@@ -30,7 +38,6 @@ public class MahJongModel {
 	
 	private void dealBoard() {
 
-		deck.shuffle();
 		
 		//Layer 0
 		dealRow(0,0,0,12);
@@ -86,12 +93,16 @@ public class MahJongModel {
 	}
 	
 	public void undo() {
-		if (undoStack.isEmpty()) return;
-		replaceTile(undoStack.pop());
-		replaceTile(undoStack.pop());		
+		replaceTile();
+		replaceTile();
 	}
 	
-	public Tile replaceTile(Tile t) {
+	public Tile replaceTile() {
+		if (undoStack.isEmpty()) return null;
+		return placeTile(undoStack.pop());
+	}
+	
+	public Tile placeTile(Tile t) {
 		board.add(t);
 		if (t.isSpecial()) {
 			specialSlots[t.getSpecialIndex()] = t;
@@ -117,14 +128,8 @@ public class MahJongModel {
 		return t;
 	}
 	
-	public Tile printTile(int row, int col, int layer, String mod) { //TODO: used for debugging, remove before shipping
-		Tile t = getTile(row,col,layer);
-		System.out.println("printTile - Tile: " + t + " " + mod);
-		return t;
-	}
-	
-	public Tile printTile(int row, int col, int layer) { //TODO: used for debugging, remove before shipping
-		return printTile(row,col,layer,"");
+	public int getUndoSize() {
+		return undoStack.size();
 	}
 	
 	public boolean isTileOpen(int row, int col, int layer) {

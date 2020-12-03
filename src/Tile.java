@@ -33,6 +33,8 @@ public class Tile extends JPanel{
 	private int layer = -1;
 	private MahJongModel model;
 	private int zOrder = -1;
+	private int boardX = 0;
+	private int boardY = 0;
 	
 	static
 	{
@@ -119,6 +121,8 @@ public class Tile extends JPanel{
 	public void setSpecial(int specialIndex) { this.specialIndex = specialIndex; }
 	public void setModel(MahJongModel model) { this.model = model; }
 	public void setZOrder() { zOrder = getParent().getComponentZOrder(this); }
+	public void setToBoardLocation() { System.out.println("" + boardX + boardY); setLocation(boardX, boardY); }
+	public void setBoardLocation(int x, int y) { setLocation(x,y); boardX = x; boardY = y; }
 	
 	public void resetZOrder() { getParent().setComponentZOrder(this, zOrder); }
 	

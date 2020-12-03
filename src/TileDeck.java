@@ -3,6 +3,7 @@ import	java.util.*;
 
 public class TileDeck
 {
+	
 	private static final Random RANDOM = new Random();
 	
 	private	ArrayList<Tile>	deck = new ArrayList<>(144);

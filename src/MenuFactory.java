@@ -15,6 +15,10 @@ public class MenuFactory {
 	public static void setTarget(Object newTarget) {
 		target = newTarget;
 	}
+	public static void configure(JMenuBar newBar, Object newTarget) {
+		bar = newBar;
+		target = newTarget;
+	}
 
 	// newMenu
 	public static JMenu newMenu(String name) {
@@ -39,6 +43,13 @@ public class MenuFactory {
 	public static JMenuItem newItem(String name, JMenu menu) {
 		if (bar == null) return null;
 		JMenuItem item = newItem(name);
+		menu.add(item);
+		return item;
+	}
+	public static JMenuItem newItem(String name, JMenu menu, String method) {
+		if (bar == null) return null;
+		JMenuItem item = newItem(name);
+		item.addActionListener((ActionListener)EventHandler.create(ActionListener.class, target, method));
 		menu.add(item);
 		return item;
 	}
